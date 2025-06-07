@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Surat Permintaan Data</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* === PALET WARNA & VARIABEL === */
+        :root {
+            --primary-color-light: #6aa3d9;
+            --primary-color-medium: #3674B5;
+            --primary-color-dark: #2973B2;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --bg-main: #f0f4f8;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow-color-light: rgba(54, 116, 181, 0.1);
+            --shadow-color-medium: rgba(54, 116, 181, 0.2);
+            --success-color: #22c55e;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+        }
+
+        /* === RESET & BODY === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Konten di tengah secara vertikal */
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        /* === KONTAINER UTAMA DENGAN SPLIT LAYOUT === */
+        .container {
+            width: 100%;
+            max-width: 900px; /* Sedikit lebih lebar untuk layout split */
+            background: var(--bg-card);
+            border-radius: 20px; /* Sudut lebih melengkung */
+            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-wrap: wrap; /* Agar responsif */
+        }
+
+        /* === [BARU] PANEL VISUAL (KIRI) === */
+        .visual-panel {
+            flex: 1;
+            min-width: 300px;
+            background-image: linear-gradient(160deg, var(--primary-color-light) 0%, var(--primary-color-dark) 100%);
+            color: white;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .visual-panel .big-icon {
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+        .visual-panel h2 {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .visual-panel p {
+            font-size: 1em;
+            opacity: 0.85;
+            line-height: 1.6;
+        }
+
+        /* === PANEL FORM (KANAN) === */
+        .form-panel {
+            flex: 1.5; /* Lebih lebar dari panel visual */
+            min-width: 400px;
+            padding: 40px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Styling elemen di dalam Form Panel */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+            color: var(--primary-color-medium);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--primary-color-dark); }
+        .back-link svg { transition: transform 0.2s; }
+        .back-link:hover svg { transform: translateX(-4px); }
+
+        #searchContainer h3 { /* Diubah ke H3 untuk hierarki */
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        #searchContainer .subtitle {
+            font-size: 1.1em;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color-medium);
+            box-shadow: 0 0 0 4px var(--shadow-color-light);
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: var(--primary-color-dark);
+            color: white;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-top: 20px;
+            width: 100%; /* Tombol memenuhi lebar form */
+            box-shadow: 0 4px 12px var(--shadow-color-medium);
+        }
+        .action-btn:hover {
+            background-color: var(--primary-color-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px var(--shadow-color-medium);
+        }
+        
+        /* Gaya untuk hasil pencarian (tetap sama) */
+        .result-wrapper { padding: 40px 50px; }
+        .result-card { border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; background-color: #f8fafc; }
+        .result-header { display: flex; align-items: center; gap: 12px; padding-bottom: 15px; margin-bottom: 20px; }
+        .result-header h3 { font-size: 1.6em; font-weight: 700; color: var(--text-primary); }
+        .result-item { display: grid; grid-template-columns: 40px 1fr; gap: 15px; align-items: flex-start; padding: 15px 0; font-size: 16px; border-bottom: 1px solid var(--border-color); }
+        .result-item:last-child { border-bottom: none; }
+        .item-icon { color: var(--primary-color-medium); }
+        .item-content .result-label { font-weight: 600; color: var(--text-primary); margin-bottom: 4px; display: block; }
+        .item-content .result-value { color: var(--text-secondary); word-break: break-word; }
+        .result-value strong { color: var(--text-primary); }
+        .link-button { display: inline-flex; align-items: center; gap: 6px; background: var(--primary-color-dark); color: white !important; padding: 8px 16px; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 500; transition: all 0.3s; }
+        .link-button:hover { background: var(--primary-color-light); transform: translateY(-2px); }
+        .status-badge { padding: 7px 15px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; color: white; }
+        .status-selesai { background-color: var(--success-color); }
+        .status-diproses { background-color: var(--primary-color-medium); }
+        .status-data-tidak-tersedia { background-color: var(--danger-color); }
+        .status-pending { background-color: var(--warning-color); }
+        
+        /* Utility */
+        .loading { text-align: center; padding: 40px; color: var(--text-secondary); }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-color-medium); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .error-message { background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center; }
+        .hidden { display: none; }
+
+        /* Media Query untuk Mobile */
+        @media (max-width: 768px) {
+            .visual-panel {
+                border-radius: 20px 20px 0 0;
+            }
+            .form-panel {
+                padding: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" data-aos="zoom-in" data-aos-duration="500">
+        
+        <div id="searchWrapper" style="display: flex; width: 100%; flex-wrap: wrap;">
+            <div class="visual-panel">
+                <div class="big-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <circle cx="10.5" cy="15.5" r="2.5"></circle>
+                        <line x1="12.5" y1="17.5" x2="16.5" y2="21.5"></line>
+                    </svg>
+                </div>
+                <h2>Pencarian Detail</h2>
+                <p>Temukan informasi lengkap mengenai surat yang Anda cari dengan cepat dan akurat.</p>
+            </div>
+    
+            <div class="form-panel">
+                <a href="index.html" class="back-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Kembali ke Daftar Surat
+                </a>
+                
+                <div id="searchContainer">
+                    <h3>Cek Detail Surat</h3>
+                    <p class="subtitle">Masukkan Nomor Surat yang valid untuk melihat detailnya.</p>
+                    <form id="searchForm">
+                        <div class="form-group">
+                            <label for="searchValue">Nomor Surat</label>
+                            <input type="text" id="searchValue" placeholder="Contoh: B/945/V/OTL.1.1./2025" required>
+                        </div>
+                        <button type="submit" class="action-btn" id="searchBtn">
+                            <span>Cari Surat</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="resultWrapper" class="result-wrapper hidden" style="width: 100%;">
+            <a href="javascript:resetSearch()" class="back-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Lakukan Pencarian Baru
+            </a>
+            <div id="loading" class="loading hidden">
+                <div class="spinner"></div>
+                <p>Mencari data surat...</p>
+            </div>
+            <div id="resultContainer" class="hidden" data-aos="fade-in" data-aos-duration="800">
+                <div class="result-card" id="resultCard"></div>
+            </div>
+            <div id="errorMessage" class="error-message hidden"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init({ once: true, easing: 'ease-in-out' });
+
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwhu9aumzQZyMHQZkPYVCqaI12PfOGg2LiZH1IvFnsFjaRH8DNml1LsLkVkqjeRMCCW/exec';
+
+        // Pindahkan referensi elemen ke lingkup global agar bisa diakses fungsi reset
+        const searchWrapper = document.getElementById('searchWrapper');
+        const resultWrapper = document.getElementById('resultWrapper');
+        const searchForm = document.getElementById('searchForm');
+        const searchValue = document.getElementById('searchValue');
+        const searchBtn = document.getElementById('searchBtn');
+        const loading = document.getElementById('loading');
+        const resultContainer = document.getElementById('resultContainer');
+        const resultCard = document.getElementById('resultCard');
+        const errorMessage = document.getElementById('errorMessage');
+
+        searchForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const searchVal = searchValue.value.trim();
+            if (!searchVal) return;
+
+            searchWrapper.classList.add('hidden');
+            resultWrapper.classList.remove('hidden');
+            loading.classList.remove('hidden');
+            resultContainer.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            searchBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${APPS_SCRIPT_URL}?action=search&type=nomor&value=${encodeURIComponent(searchVal)}`);
+                const data = await response.json();
+                
+                loading.classList.add('hidden');
+                
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    showResult(data);
+                    resultContainer.classList.remove('hidden');
+                    setTimeout(() => AOS.refresh(), 50);
+                }
+            } catch (error) {
+                loading.classList.add('hidden');
+                showError('Terjadi kesalahan. Periksa koneksi internet Anda.');
+                console.error('Error:', error);
+            }
+        });
+
+        // (Fungsi showResult, createResultItem, getStatusClass, formatDate tetap sama)
+        function showResult(data) {
+            const statusClass = getStatusClass(data.status);
+            
+            function formatLampiran(url) {
+                if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+                    return `<a href="${url}" target="_blank" class="link-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                                <span>Buka Lampiran</span>
+                            </a>`;
+                }
+                return url || '-';
+            }
+
+            resultCard.innerHTML = `
+                <div class="result-header">
+                    <h3>Detail Surat Permintaan Data</h3>
+                </div>
+                ${createResultItem('hash', 'Nomor Surat', `<strong>${data.nomorSurat || '-'}</strong>`)}
+                ${createResultItem('calendar', 'Tanggal Surat', formatDate(data.tanggalSurat))}
+                ${createResultItem('log-in', 'Tanggal Diterima', formatDate(data.tanggalTerima))}
+                ${createResultItem('user', 'Pengirim', data.pengirim || '-')}
+                ${createResultItem('file-text', 'Perihal', data.perihal || '-')}
+                ${createResultItem('database', 'Data yang Diminta', `<span style="white-space: pre-wrap;">${data.dataYangDiminta || '-'}</span>`)}
+                ${createResultItem('check-circle', 'Tanggal Penyelesaian', formatDate(data.tanggalPenyelesaian))}
+                ${createResultItem('paperclip', 'Lampiran Surat Keluar', formatLampiran(data.lampiransuratkeluar))}
+                ${createResultItem('info', 'Status', `<span class="status-badge ${statusClass}">${data.status || 'Pending'}</span>`)}
+            `;
+        }
+        
+        function createResultItem(iconName, label, value) {
+            const icons = {
+                'hash': '<path d="M4 9h16v2H4zM4 15h16v2H4zM10 3L8 21m8-18l-2 18"/>',
+                'calendar': '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>',
+                'log-in': '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line>',
+                'user': '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>',
+                'file-text': '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>',
+                'database': '<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>',
+                'check-circle': '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>',
+                'paperclip': '<path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>',
+                'info': '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line>'
+            };
+
+            return `<div class="result-item">${icons[iconName] ? `<div class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${icons[iconName]}</svg></div>` : ''}<div class="item-content"><span class="result-label">${label}</span><span class="result-value">${value}</span></div></div>`;
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+            searchBtn.disabled = false;
+        }
+
+        function resetSearch() {
+            resultWrapper.classList.add('hidden');
+            searchWrapper.classList.remove('hidden');
+            searchWrapper.setAttribute('data-aos', 'zoom-in');
+            AOS.refresh();
+
+            searchValue.value = '';
+            searchBtn.disabled = false;
+            searchValue.focus();
+        }
+        
+        function getStatusClass(status) {
+            if (!status) return 'status-pending';
+            const statusLower = status.toLowerCase().trim().replace(/\s+/g, '-');
+            return `status-${statusLower}` || 'status-pending';
+        }
+
+        function formatDate(dateValue) {
+            if (!dateValue) return '-';
+            try {
+                const date = new Date(dateValue);
+                if (isNaN(date.getTime())) return dateValue;
+                return date.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            } catch (error) {
+                return dateValue;
+            }
+        }
+    </script>
+</body>
+</html>
